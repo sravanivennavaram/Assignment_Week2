@@ -1,0 +1,58 @@
+---
+title: "ANA 515 Assignment 1"
+author: "Sravanivennavaram"
+date: '2021'
+output:
+  html_document:
+    df_print: paged
+  theme:
+    bootswatch: cerulean
+    df_print: paged
+  word_document: null
+---
+
+``` {r, echo = FALSE}
+#Note, Each gray box below is a code chunk. You need to insert a code chunk and put your R code in it. By setting echo = FALSE. this comment and any code will not show in my output document. If it were TRUE, the comment and code would appear. 
+```
+
+```{r, echo = FALSE}
+url <- 'https://raw.githubusercontent.com/fivethirtyeight/guns-data/master/full_data.csv'
+gun_deaths <- read.csv(url)
+```
+
+
+```{r setup, echo = FALSE}
+#The include = FALSE function hides both the code and output in my output document
+
+#You need to install these packages first to be able to use the functions within them. You can install them from the Tools tab or write a new code chunk: install.packages("package_name").
+library(tidyverse)
+library(knitr)
+library(bslib)
+
+youth <- gun_deaths %>%
+            filter(age <= 65)
+
+summary(youth)
+
+n_rows <- nrow(gun_deaths)
+n_diff <- n_rows - nrow(youth)
+```
+
+
+We have data about `r n_rows` individuals killed by guns. Only `r n_diff` are older than 65. The distribution of the remainder is shown
+below:
+
+```{r youth-dist, echo = FALSE}
+youth %>% 
+  ggplot(aes(age)) + 
+  geom_freqpoly(binwidth = 1)
+```
+
+# Gun deaths by race
+
+```{r race-dist, echo = FALSE}
+youth %>% 
+  ggplot(aes(fct_infreq(race) %>% fct_rev())) +
+  geom_bar() + coord_flip() +
+  labs(x = 'Victim Race')
+```
